@@ -1,3 +1,5 @@
+use crate::opcode::{ Get, OpcodeExecutor };
+
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct Stack(Vec<u128>);
@@ -55,35 +57,67 @@ impl std::iter::IntoIterator for Stack {
     }
 }
 
+impl OpcodeExecutor for Stack {
+    fn add(&mut self) {
+        let (a, b) = self.pop2_sorted();
 
+        let result = a.checked_add(b).expect("aritmathic overflow or underflow");
+
+        self.push(result)
+    }
+
+    fn sub(&mut self) {
+        let (a, b) = self.pop2_sorted();
+
+        let result = a.checked_sub(b).expect("aritmathic overflow or underflow");
+
+        self.push(result)
+    }
+
+    fn div(&mut self) {
+        let (a, b) = self.pop2_sorted();
+
+        let result = a.checked_div(b).expect("aritmathic overflow, underflow, or devision by zero");
+
+        self.push(result);
+    }
+
+    fn mul(&mut self) {
+        let (a, b) = self.pop2_sorted();
+
+        let result = a.checked_mul(b).expect("aritmathic overflow or underflow");
+
+        self.0.push(result);
+    }
+
+    fn modu(&mut self) {
+        let (a, b) = self.pop2_sorted();
+
+        self.0.push(a % b);
+    }
+
+    fn push(&mut self, value: u128) {
+        self.0.push(value);
+    }
+
+    fn pop(&mut self) {
+        self.0.pop();
+    }
+}
 
 impl Stack {
     pub fn new() -> Self {
         Self(Vec::new())
     }
 
-    pub fn sub(&mut self) {
-        let a = self.0.pop().unwrap();
-        let b = self.0.pop().unwrap();
-        self.0.push(b - a);
-    }
-
-    pub fn add(&mut self) {
-        let a = self.0.pop().unwrap();
-        let b = self.0.pop().unwrap();
-        self.0.push(b + a);
-    }
-
-    pub fn push(&mut self, value: u128) {
-        self.0.push(value);
-    }
-
-    pub fn pop(&mut self) {
-        self.0.pop();
-    }
-
     pub fn len(&self) -> usize {
         self.0.len()
+    }
+
+    fn pop2_sorted(&mut self) -> (u128, u128) {
+        let (a, b) = self.pop2_sorted();
+
+        (b, a)
     }
 
     pub fn is_empty(&self) -> bool {
@@ -92,5 +126,11 @@ impl Stack {
 
     pub fn iter(&self) -> std::slice::Iter<'_, u128> {
         self.0.iter()
+    }
+}
+
+impl Get<Vec<u128>> for Stack {
+    fn get(&self) -> Vec<u128> {
+        self.0.clone()
     }
 }

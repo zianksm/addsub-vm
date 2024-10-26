@@ -1,2 +1,6 @@
 [workspace]
 members = ["vm"]
+
+
+[workspace.dependencies]
+paste = "1.0.15"            # Macros for all your token pasting needs
