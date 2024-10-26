@@ -25,7 +25,9 @@ impl<Exec> Vm<Exec> where Exec: OpcodeExecutor + Get<Vec<u128>> + Default {
             Opcode::ADD => self.stack.add(),
             Opcode::SUB => self.stack.sub(),
             Opcode::POP => self.stack.pop(),
-            _ => unimplemented!(),
+            Opcode::DIV => self.stack.div(),
+            Opcode::MUL => self.stack.mul(),
+            Opcode::MODU => self.stack.modu(),
         }
     }
 
@@ -62,5 +64,31 @@ mod tests {
     fn test_assembly() {
         let result = exec_inline!(PUSH(1), PUSH(2), ADD, PUSH(3), SUB);
         assert_eq!(result, Into::<Vec<u128>>::into(vec![0]));
+    }
+
+    #[test]
+    fn test_mul() {
+        let result = exec_inline!(PUSH(5), PUSH(5), MUL);
+        let result = result.get(0).unwrap().to_owned();
+        assert_eq!(result, 25)
+    }
+
+    #[test]
+    fn test_div() {
+        let result = exec_inline!(PUSH(25), PUSH(5), DIV);
+        let result = result.get(0).unwrap().to_owned();
+        assert_eq!(result, 5)
+    }
+
+    #[test]
+    fn test_mod() {
+        let result = exec_inline!(PUSH(25), PUSH(2), MODU);
+        let result = result.get(0).unwrap().to_owned();
+        assert_eq!(result, 1)
+    }
+
+    #[test]
+    fn test_combine() {
+        let result = exec_inline!(PUSH(25), PUSH(2), MUL, PUSH(10), DIV, PUSH(20), ADD);
     }
 }

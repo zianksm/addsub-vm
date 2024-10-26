@@ -87,7 +87,7 @@ impl OpcodeExecutor for Stack {
 
         let result = a.checked_mul(b).expect("aritmathic overflow or underflow");
 
-        self.0.push(result);
+        self.push(result);
     }
 
     fn modu(&mut self) {
@@ -115,7 +115,8 @@ impl Stack {
     }
 
     fn pop2_sorted(&mut self) -> (u128, u128) {
-        let (a, b) = self.pop2_sorted();
+        let a = self.0.pop().unwrap_or_default();
+        let b = self.0.pop().unwrap_or_default();
 
         (b, a)
     }
