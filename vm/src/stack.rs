@@ -2,33 +2,33 @@ use crate::opcode::{ Get, OpcodeExecutor };
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[repr(transparent)]
-pub struct Stack(Vec<u128>);
+pub struct DefaultStack(Vec<u128>);
 
-impl AsRef<Vec<u128>> for Stack {
+impl AsRef<Vec<u128>> for DefaultStack {
     fn as_ref(&self) -> &Vec<u128> {
         &self.0
     }
 }
 
-impl AsMut<Vec<u128>> for Stack {
+impl AsMut<Vec<u128>> for DefaultStack {
     fn as_mut(&mut self) -> &mut Vec<u128> {
         &mut self.0
     }
 }
 
-impl From<Vec<u128>> for Stack {
+impl From<Vec<u128>> for DefaultStack {
     fn from(vec: Vec<u128>) -> Self {
         Self(vec)
     }
 }
 
-impl From<Stack> for Vec<u128> {
-    fn from(stack: Stack) -> Self {
+impl From<DefaultStack> for Vec<u128> {
+    fn from(stack: DefaultStack) -> Self {
         stack.0
     }
 }
 
-impl std::ops::Deref for Stack {
+impl std::ops::Deref for DefaultStack {
     type Target = Vec<u128>;
 
     fn deref(&self) -> &Self::Target {
@@ -36,19 +36,19 @@ impl std::ops::Deref for Stack {
     }
 }
 
-impl std::ops::DerefMut for Stack {
+impl std::ops::DerefMut for DefaultStack {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::iter::FromIterator<u128> for Stack {
+impl std::iter::FromIterator<u128> for DefaultStack {
     fn from_iter<I: IntoIterator<Item = u128>>(iter: I) -> Self {
         Self(Vec::from_iter(iter))
     }
 }
 
-impl std::iter::IntoIterator for Stack {
+impl std::iter::IntoIterator for DefaultStack {
     type Item = u128;
     type IntoIter = std::vec::IntoIter<u128>;
 
@@ -57,7 +57,7 @@ impl std::iter::IntoIterator for Stack {
     }
 }
 
-impl OpcodeExecutor for Stack {
+impl OpcodeExecutor for DefaultStack {
     fn add(&mut self) {
         let (a, b) = self.pop2_sorted();
 
@@ -105,7 +105,7 @@ impl OpcodeExecutor for Stack {
     }
 }
 
-impl Stack {
+impl DefaultStack {
     pub fn new() -> Self {
         Self(Vec::new())
     }
@@ -130,7 +130,7 @@ impl Stack {
     }
 }
 
-impl Get<Vec<u128>> for Stack {
+impl Get<Vec<u128>> for DefaultStack {
     fn get(&self) -> Vec<u128> {
         self.0.clone()
     }

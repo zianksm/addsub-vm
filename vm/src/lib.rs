@@ -2,10 +2,10 @@ pub mod opcode;
 pub mod stack;
 
 use opcode::{ Get, Opcode, OpcodeExecutor };
-use stack::Stack;
+use stack::DefaultStack;
 
-pub struct Vm<Exec = Stack> {
-    stack: Exec,
+pub struct Vm<Stack = DefaultStack> {
+    stack: Stack,
     pc: usize,
     opcodes: Vec<Opcode>,
 }
